@@ -22,23 +22,25 @@ func main() {
 		fmt.Println("Error accepting connection: ", err.Error())
 		os.Exit(1)
 	}
+	defer con.Close()
 
-	var buff []byte
+	for {
+		var buff []byte
 
-	_, err = con.Read(buff)
-	if err != nil {
+		_, err = con.Read(buff)
+		if err != nil {
 
-		fmt.Println("Error reading message: ", err.Error())
+			fmt.Println("Error reading message: ", err.Error())
 
-		os.Exit(1)
+			os.Exit(1)
 
+		}
+
+		_, err = con.Write([]byte("+PONG\r\n"))
+
+		if err != nil {
+
+			fmt.Println("Error writing response message: ", err.Error())
+		}
 	}
-
-	_, err = con.Write([]byte("+PONG\r\n"))
-
-	if err != nil {
-
-		fmt.Println("Error writing response message: ", err.Error())
-	}
-
 }
